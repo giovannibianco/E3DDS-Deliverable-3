@@ -1,0 +1,137 @@
+\documentclass[12pt,a4paper]{article}
+
+% \usepackage{array}
+% \usepackage{pbox}
+% \usepackage{hanging}
+\usepackage{fancyhdr}
+% \usepackage{caption}
+% \usepackage{enumitem}
+\usepackage{fancyvrb}
+\usepackage{color}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{url}
+
+\usepackage{xspace}
+
+\usepackage{rotating}
+\usepackage{wrapfig}
+
+\usepackage{cite}
+\usepackage{textcomp}
+
+\usepackage[gen]{eurosym}
+\usepackage{hyperref}
+
+\usepackage{todonotes}
+
+\usepackage{gensymb}
+
+% \usepackage{draftwatermark}
+% \SetWatermarkText{draft v2}
+% \SetWatermarkScale{6}
+
+\fancypagestyle{plain}{ %
+  \fancyhf{} % remove everything
+  \renewcommand{\headrulewidth}{0pt} % remove lines as well
+  \renewcommand{\footrulewidth}{0pt}
+}
+
+\hyphenation{EISCAT}
+
+\input{abbrev}
+
+% \setlength{\topskip}{0mm}
+\setlength{\headheight}{15pt}
+% \setlength{\topmargin}{-5.4mm}
+% \setlength{\textheight}{230mm}
+\setlength{\textwidth}{180mm}
+\setlength{\oddsidemargin}{-5.0mm}
+% \setlength{\evensidemargin}{10.0mm}
+% \setlength{\captionmargin}{7mm}
+
+\title{
+{\bf Deliverable Document 3} \\
+Cluster Management for \ED}
+\author{E3DDS Team~\footnote{
+Anders Tjulin (EISCAT) {\tt anders.tjulin@eiscat.se};
+Ari Lukkarinen (CSC) {\tt ari.lukkarinen@csc.fi};
+Assar Westman (EISCAT) {\tt Assar.Westman@eiscat.se};
+Carl-Fredrik Enell (EISCAT) {\tt carl-fredrik.enell@eiscat.se};
+Dan Johan Jonsson (UiT) {\tt dan.jonsson@uit.no};
+Janos Nagy (NSC) {\tt fconagy@nsc.liu.se};
+Harri Hellgren (EISCAT) {\tt harri.hellgren@eiscat.se};
+Ingemar H\"{a}ggstr\"{o}m (EISCAT) {\tt ingemar.haggstrom@eiscat.se};
+Mattias Wadenstein (UmU) {\tt maswan@hpc2n.umu.se};
+% Roy Dragseth (UiT) {\tt roy.dragseth@uit.no};
+John White (NeIC) {\tt john.white@cern.ch}}}
+
+\date{\today}
+
+\begin{document}
+
+\pagestyle{fancy}
+\lhead{\bf E3DDS project}
+\rhead{\bf 3: Cluster Management}
+
+\maketitle
+\par\noindent
+\begin{minipage}{0.5\textwidth}
+  \includegraphics[scale=0.18]{NEIC_logo_screen_black.pdf}
+  %\vspace{-0.09in}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+  \hfill
+  %\includegraphics[scale=0.25]{EISCAT3Dlogo1.pdf}
+  % New official logo with green text
+  \includegraphics[width=0.75\linewidth]{e3d-logo-green-500px}
+\end{minipage}
+
+\newpage
+\tableofcontents
+\newpage
+
+\section{Executive Summary}
+\label{exec-summ}
+
+%\todo[inline]{Executive summary to be written at the end of the document writing process? Moved the current exec summary to introduction as that's what it was more like}
+
+
+
+\section{Purpose}
+\label{purpose}
+
+The purpose of this document is to describe the simulated data processing chain of the upcoming \ED radar.
+This document briefly describes each component in the data processing chain and the work required to deploy on the \neinfra{s}.
+
+\subsection{Intended Audience}
+
+The intended audience of this document is primarily the \ED project management and staff in order to understand what is complete and where more work is required in the data chain.
+The operators of national \einfra{s} can also use this document to understand the requirements on hardware and networks in order to support \ED.
+
+\section{Introduction}
+\label{intro}
+
+The \ED sites, the central transmitting/receiving (TX) and remote receiving (RX) sites, will require some computing capacity.
+
+\section{Site Cluster Management}
+
+\subsection{Remote sites}
+
+\subsection{Central site}
+
+\section{Cluster Login}
+
+
+\subsection{User Login}
+
+\subsection{Administrative Login}
+
+% end of the text of the document...
+
+\newpage
+\bibliography{main}{}
+\bibliographystyle{unsrt}
+
+\end{document}
