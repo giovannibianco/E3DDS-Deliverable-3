@@ -114,7 +114,8 @@ The operators of national \einfra{s} can also use this document to understand th
 \label{intro}
 
 The \ED sites, the central transmitting/receiving (TX) and remote receiving (RX) sites, will require some computing capacity.
-The amount of computing required at these sites varies according to the capacity and latency of the wide area network that connects them.
+The amount of computing required at these sites varies according to the capacity and latency of the wide area network (WAN)
+that connects them.
 Computing clusters to consider fall into these categories:
 \bitm
 \item Ring Buffer-Beam Former (RBBF) nodes;
@@ -123,8 +124,9 @@ Computing clusters to consider fall into these categories:
 \item Local site disk buffers;
 \item \ED data archives;
 \item User analysis computing nodes.
-\eitm
-
+  \eitm
+An assumption is made that the TX site, located at Skibotn NO, will function as the ``central'' site as opposed to the RX sites, nominally located at Kaaresuvanto FI and Kaiseniemi SE.
+  
 The WAN options are described in~\cite{wan-options}.
 From ~\cite{wan-options}, the options are generally ring topology between the TX and RX sites:
 \begin{enumerate}
