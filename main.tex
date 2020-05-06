@@ -175,13 +175,23 @@ It is also expected that another cluster, used for administrative purposes, will
 This administrative cluster is not expected to be anywhere near the same scale as the RBBF or Prompt computing clusters
 and is a good candidate to be hosted within virtual machines.
 
-The administrators of these clusters will need to be able to login.
+The administrators of these clusters will need to be able to access these systems.
 This is different to the logins described in Section~\ref{sec:users} as these will be performed by \EC employees or contractors
 in order to repair/configure/update the systems.
-These administrators may be logging in to the clusters through local terminals or remotely via the internet.
+It is important to remember that these logins will be requesting privileged access (up to root level on Unix-type systems) and contrast to user logins on other \einfra resources.
+These administrators may be logging in to the clusters through local terminals or remotely via the internet from any \EC member institution
+or contracted partner.
 The second case is far more likely.
+Some basic requirements for administrative logins can be given:
+\bitm
+\item Login over secure connections only. i.e. no telnet etc;
+\item Logins to clusters restricted to known set of users;
+\item Logins and actions traceable (logged);
+\eitm
 
-The subject of administrator logins of distributed
+This subject of securely logging in administrators has been studied in industry~\cite{fb-ssh}.
+This approach has been implemented in \nnt, academic computing \einfra, that shares the same characteristics as the future \ED \einfra.
+
 
 The logins to the \ED 
 Access to a cluster
