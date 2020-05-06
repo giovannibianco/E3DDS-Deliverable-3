@@ -169,7 +169,13 @@ The central (Skibotn) site will host several distinct clusters for \ED.
 The Ring Buffer-Beam Former (RBBF) nodes will function as the RAM ring buffer and also produce the narrow angle beams.
 These nodes will also write the narrow angle beams into file format to be forwarded to the prompt computing for further processing into data products.
 The RBBF cluster is expected to be composed of $30$ high-RAM and throughput computing nodes~\cite{amd-epyc}.
-The prompt computing is expected to consist of $N$ 
+The ``Prompt Computing'' is expected to consist of $N$ commodity computing (optimized for reprocessing of files) or $M$ nodes containing
+GPU accelerators.
+It is also expected that another cluster, used for administrative purposes, will be sited at Skibotn.
+This administrative cluster is not expected to be anywhere near the same scale as the RBBF or Prompt computing clusters
+and is a good candidate to be hosted within virtual machines.
+
+
 
 The logins to the \ED 
 Access to a cluster
