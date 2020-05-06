@@ -165,6 +165,13 @@ Switch configuration
 \section{Cluster Login}
 \label{sec:cluster}
 
+\subsection{Administrative Login}
+\label{sec:admin}
+
+% Here describe the NT1 solution for admin logins...
+% 2 factor
+% other candidates?
+
 The central (Skibotn) site will host several distinct clusters for \ED.
 The Ring Buffer-Beam Former (RBBF) nodes will function as the RAM ring buffer and also produce the narrow angle beams.
 These nodes will also write the narrow angle beams into file format to be forwarded to the prompt computing for further processing into data products.
@@ -189,8 +196,14 @@ Some basic requirements for administrative logins can be given:
 \item Logins and actions traceable (logged);
 \eitm
 
+\subsubsection{Bastion host}
+
 This subject of securely logging in administrators has been studied in industry~\cite{fb-ssh}.
 This approach has been implemented in \nnt, academic computing \einfra, that shares the same characteristics as the future \ED \einfra.
+
+
+\subsubsection{Local login node}
+
 
 
 The logins to the \ED 
@@ -215,13 +228,6 @@ Strong authentication
 export controls? 2 factor from the start..
 
 
-\subsection{Administrative Login}
-
-Here describe the NT1 solution for admin logins...
-
-2 factor
-
-other candidates?
 
 % end of the text of the document...
 
