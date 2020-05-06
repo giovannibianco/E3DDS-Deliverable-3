@@ -165,7 +165,12 @@ Switch configuration
 \section{Cluster Login}
 \label{sec:cluster}
 
-The central (Skibotn) site
+The central (Skibotn) site will host several distinct clusters for \ED.
+The Ring Buffer-Beam Former (RBBF) nodes will function as the RAM ring buffer and also produce the narrow angle beams.
+These nodes will also write the narrow angle beams into file format to be forwarded to the prompt computing for further processing into data products.
+The RBBF cluster is expected to be composed of $30$ high-RAM and throughput computing nodes~\cite{amd-epyc}.
+The prompt computing is expected to consist of $N$ 
+
 The logins to the \ED 
 Access to a cluster
 
