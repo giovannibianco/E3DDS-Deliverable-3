@@ -194,6 +194,7 @@ Some basic requirements for administrative logins can be given:
 \item Login over secure connections only. i.e. no telnet etc;
 \item Logins to clusters restricted to known set of users;
 \item Logins and actions traceable (logged);
+\item Two-factor authentication~\cite{two-factor} possible;
 \eitm
 
 \subsubsection{Bastion hosts}
@@ -220,18 +221,24 @@ In this fashion, no administrator has more access than they requires.
 Another scheme for administrators is to deploy (bare metal or virtual) a node, network-local to the \ED clusters, to act as a login node.
 The administrator logs in to the login node using SSH.
 Once logged in to this node, they can then further login to the cluster(s) via a second SSH step.
+The login node can be enabled to require two-factor authentication.
 
 \subsubsection{Direct logins}
 \label{ssec:direct}
 
+
 Directly log in to the nodes on the cluster.
+Nodes open to the internet.
 root and user access
-Maintain a login directory (LDAP or other) to synchronize user name and passwords.
+Maintain a login directory (LDAP or other) to synchronize user name and passwords between nodes.
 
 
 \subsection{User Login}
 \label{sec:users}
 
+The NeIC E3DS project has investigated~\cite{e3ds-md3}
+the requirements for users functioning in a scientific (as opposed to administrative) role.
+These users need to gain access to the data at the 
 Reference mainly to the federated identity e.g. EGI Checkin. Others? EduGAIN federation?
 
 Strong authentication
