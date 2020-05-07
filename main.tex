@@ -221,7 +221,7 @@ In this fashion, no administrator has more access than they requires.
 Another scheme for administrators is to deploy (bare metal or virtual) a node, network-local to the \ED clusters, to act as a login node.
 The administrator logs in to the login node using SSH.
 Once logged in to this node, they can then further login to the cluster(s) via a second SSH step.
-The login node can be enabled to require two-factor authentication.
+The login node can also be enabled to require two-factor authentication.
 
 \subsubsection{Direct logins}
 \label{ssec:direct}
@@ -231,15 +231,28 @@ Nodes open to the internet.
 root and user access
 Maintain a login directory (LDAP or other) to synchronize user name and passwords between nodes.
 
-
 \subsection{User Login}
 \label{sec:users}
 
 The NeIC E3DS project has investigated~\cite{e3ds-md3}
 the requirements for users functioning in a scientific (as opposed to administrative) role.
-These users need to gain access to the data at the 
+These users need to gain access to the various levels of \ED data ranging from raw level~1 to physical parameters level~3 data.
+The \ED data levels are defined in Table~1 of~\cite{e3ds-md3}.
+Users need to authenticate (identify) themselves in order to access the data and \einfra resources.
+The degree that an authentication can be trusted is given by its strength~\cite{owasp-aai} ranging from weak (e.g. user name and password) to strong (e.g. two-factor authentication from independent sources).
+Depending on the data level requested to be accessed by the \ED user, the strength of the authentication may vary.
+The level~1 (a or b) data may be more closely controlled as it may contain hard-target information e.g. satellites or other objects that authorities may have reservations about.
+The higher data levels (to level 3 or 4) are integrated summary or user-produced data.
+
+As outlined in~\cite{e3ds-md3}, the expected primary access to \ED data by users is expected to be through a data portal e.g. DIRAC~\cite{dirac}.
+
+The expected access mechanism to 
+Authentication 
+The strength of the 
+authentication of users 
 Reference mainly to the federated identity e.g. EGI Checkin. Others? EduGAIN federation?
 
+For example the EGI Check-in service can be integrated 
 Elixir AAI~\cite{elixir-aai}
 
 Strong authentication
