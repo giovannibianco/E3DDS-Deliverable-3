@@ -196,26 +196,37 @@ Some basic requirements for administrative logins can be given:
 \item Logins and actions traceable (logged);
 \eitm
 
-\subsubsection{Bastion host}
+\subsubsection{Bastion hosts}
+\label{ssec:bastion}
 
-This subject of securely logging in administrators has been studied in industry~\cite{fb-ssh}.
-This approach has been implemented in \nnt, academic computing \einfra, that shares the same characteristics as the future \ED \einfra.
+This subject of securely logging in multiple administrators over many nodes has been studied in industry~\cite{secure-ssh}.
+A solution~\cite{fb-ssh} has been implemented by industry leader Facebook using open-source tools.
+This approach has been implemented in \nnt, an academic computing \einfra, that shares the same characteristics as the future \ED \einfra.
 
+This scheme is based on X.509 certificate-enabled OpenSSH, an implementation of the industry-standard Secure Shell (SSH) for accessing systems.
+This scheme takes advantage of its special features, that are not widely leveraged, to provide both security and reliability using signed certificates with principals.
+
+This solution is discussed in detail in~\cite{fb-ssh}.
+The \nnt deployment~\cite{nt1-ssh} also uses the ``Bastion host" concept where the administrator logs in to a highly-protected secured host.
+Engineers (administrators) authenticate to the bastion host(s) and obtain the signed SSH certificate.
+This X.509 certificate contains all principals (information) allowed for the specific administrator. 
+Two-factor authentication can be implemented on the Bastion host to ensure an improved level of strong authentication.
+This certificate can now be used to SSH into cluster nodes as either root or other lower privileged users.
+In this fashion, no administrator has more access than they requires.
 
 \subsubsection{Local login node}
+\label{ssec:local-login-node}
 
+Another scheme for administrators is to deploy (bare metal or virtual) a node, network-local to the \ED clusters, to act as a login node.
+The administrator logs in to the login node using SSH.
+Once logged in to this node, they can then further login to the cluster(s) via a second SSH step.
 
+\subsubsection{Direct logins}
+\label{ssec:direct}
 
-The logins to the \ED 
-Access to a cluster
-
-portal web-based or other.
-
-command line 
-
-ssh or other
-
-tokens e.g. kerberos X.509 public/private key pairs
+Directly log in to the nodes on the cluster.
+root and user access
+Maintain a login directory (LDAP or other) to synchronize user name and passwords.
 
 
 \subsection{User Login}
