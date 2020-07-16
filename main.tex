@@ -131,58 +131,300 @@ The WAN options are described in~\cite{wan-options}.
 From ~\cite{wan-options}, the options are generally ring topology between the TX and RX sites:
 \begin{enumerate}
 \item IP-routed connections. 200~Gb/s total capacity;
-\item Optical Dense Wavelength Division Multiplexing (DWDM). 200~Gb/s per RX site to central site;
+\item Optical Dense Wavelength Division Multiplexing~\cite{dwdm} (DWDM). 200~Gb/s per RX site to central site;
 \item Optical DWDM with ethernet switches on local sites. 4~Tb/s per RX site to central site;
 \item Optical DWDM to central site. 6~Tb/s per RX site to central site.
 \end{enumerate}
 
+
+\section{IT service management}
+
+% Putting cluster management into a wider context
+% Discuss sla, fitsm, itil etc (in particular in relation to external providers) see DO4
+% Maybe move this section to DO4?
+% fitsm provides sla template for downloading
+% MW: there is a tradeoff with a strict process to prevent mistakes/failures vs agile operations that can deploy new stuff with minimal friction. Important to consider the "cost of failure" and chose a solution based on that. Most frameworks have a range of strictness in their implementaiton.
+
+IT service management (ITSM) %define and reference
+
+Some benefits of ITSM:
+\bitm
+\item Better understand services and responsibities
+\item Formalize what is expected through SLAs, UA and OLA%define
+\item Provision resources in an optimal way (both human and material)
+\item Have a common language with external partners
+\item Generally improve professional service delivery
+\eitm
+Implementing also comes with a cost. Human resources are needed for
+training, implementation, assessment and possibly consultation. Also
+extra tools are needed to handle things like, for example, change management and issue ticket.
+% configuration database (not only cluster)
+
+Frameworks and tools for ITSM. 
+
+Most well known ITIL, most complete ISO 20000, lightweight FitSM.
+
+Processes and process management % (ITIL 3 ->4, process -> service)
+
+How to implement? Adopt, adapt, apply
+
 \section{Site Cluster Management}
 
-Tools for cluster management
+It will be a complex task to manage and provisioning the site
+clusters. Manually keeping track of hardware configurations and
+software stacks with interactive tools is likely to be error prone and
+work intensive. The installations should be consistent across the
+sites and within each sites there are multiple nodes that ideally
+should be configured consistently. We suggest that the complete
+configuration and state of the site clusters should be described
+through machine readable definition files, which are to be put under
+version control, and deployed using dedicated tooling. 
+This strategy is more generally known as Infrastructure as code (IaC).
 
-\begin{enumerate}
-    \item xCat (IBM) open source  Perl, Python, Bash
-    \item Ansible (RedHat) open source/enterprice Python, agentless
-    \item Puppet open source/enterprice  C++, Clojure, Ruby
-    \item Chef open source/enterprice Ruby, Erlang, Domain Specific Language (DSL) 
-\end{enumerate}
+The configuration is typically stored in a database 
+
+Audability: should be possible to review and trace changes
+
+Authenticity: signed commits
+
+\subsection{Tools}
+
+% Choice of tool will depend on operation scenario from do4
+
+% make table instead, link to more exhaustive list
+\bitm
+\item xCat~\cite{xcat} open source  Perl, Python, Bash
+\item Ansible~\cite{ansible} enterprice/open source~\cite{ansible-community}, Python, agentless, INI/YAML configuration, playbook~\cite{ansible-galaxy}
+\item Puppet~\cite{puppet} enterprice/open source~\cite{puppet-osp},  C++, Clojure, Ruby Domain Specific Language (DSL) config, modules~\cite{puppet-forge}
+\item Chef~\cite{chef} enterprice/open source~\cite{chef-infra}, Ruby, Erlang, DSL config, cookbooks~\cite{chef-cookbooks}
+\eitm
+
+Approaches to managing state: declarative/functional/what vs imperative/procedural/how.
+
+Methods to propagate changes: push vs pull, transactions should preferably be idempotent.
+
+Some tools provide roll back to previous known working state. 
+NixOS is an operating system were this is a built in feature, but comes with a high learning curve. 
+
 
 Software provisioning: OS, Database, VM?, software stack, EasyBuild + CernVM File System
+\subsubsection{Software provisioning} \label{ssec:software}
 
-Hardware control: remote console, firmware flash, power management
+Software for the RBBF and prompt computing and user computing can be provided by the CernVM File System~\cite{cernvmfs} (CernVM-FS). 
+This is a scalable, reliable and low-maintenance software distribution service that is implemented as a POSIX read-only file system in user space. 
+It was developed to assist High Energy Physics (HEP) collaborations to deploy software on the worldwide-distributed computing infrastructure used to run data processing applications. 
+CernVM-FS transfers data and meta-data on demand and verifies data integrity by cryptographic hashes.
+In many cases, it replaces package managers and shared software areas on cluster file systems as means to distribute the software used to process experiment data. 
+
+\subsubsection{Hardware control} \label{ssec:hardware}
+
+Hardware control: remote console, power management, firmware 
+%% John to write.
+%% 
+Power management provided by vendor, server power supplies provide monitoring information
+connected to the monitoring network.
+
+Remote console
+either ssh console to the server or power supply also through the monitoring network.
+
+Firmware ... if power supply requires firmware then updated by the vendor ... service agreement.
+
+
+For hardware control 
+% log, metrics (rdd, ganglia), collection, graphana
+https://www.rocksclusters.org/
+Monitoring tools: ?%nav https://nav.uninett.no/ %% Dan has stuff here.
+
+\subsubsection{logging} \label{ssec:logging}
+Logging: syslog/rsyslog, other tools? %% Dan has stuff here.
+
+
+
+\subsubsection{Resource Management} \label{ssec:resource}
+%% Resource management: Kubernetes? %% Tromso pushes to M$ Azure.
+% Use-case... 
+% Describe generally Trondheim solution... reference?
+% Reboot as slurm daemon nodes... advertise to slurm master?
+% could these nodes advertise to somewhere else totally off-site.
+% tool to send to different clusters... across admin domains.
+% htcondor... pbs, torque, plus... 
+% maui
+The resources of the clusters, in this case the RBBF and prompt computing nodes, should be managed to provide a benefit to \ED at all times.
+When the online data taking is paused, when the radar is off or for other reasons, the clusters should be configured to perform other computing tasks e.g. user analysis of data.
+These nodes can be configured to run the online data handling on ``bare metal"~\footnote{From wikipedia: In computer science, bare machine (or bare metal) refers to a computer executing instructions directly on logic hardware without an intervening operating system.} and, when the online data is paused, run other computing tasks within other environments.
+
+A simple configuration is to start a slurm~\cite{slurm} daemon, for a cluster management and job scheduling system, that advertises to a central job queue (slurm master) and accepts computing jobs.
+In a similar manner there are other job submission systems that can be employed e.g. Portable Batch System~\cite{pbs}, TORQUE~\cite{torque} or HTCondor~\cite{htcondor}.
+An attractive feature of this approach is the relative ease of deploying multi-node e.g. using MPI~\cite{mpi} computing jobs.
+
+Another approach can use virtualized environments.
+When the online data-taking is paused, the cluster nodes launch virtual machine(s) or containers that have a standard \ED software and configuration environment.
+This can be achieved through various levels of virtualization ranging from the low-level xen~\cite{xen}, kvm~\cite{kvm} or QEMU~\cite{qemu} to mid-level libvirt~\cite{libvirt} to higher-level OpenStack~\cite{openstack} or Kubernetes~\cite{kubernetes}.
+The lower level solutions require more expertise in low-level operating systems issues but can be operated with lower \einfra and personnel resources.
+Whereas the higher level solutions hide the underlying complexity but require hard-to-find expertise to install and maintain the installation.
+% John to describe libvirt possibility. slurm daemon etc. i.e. not openstack 
+% etc.
+Some considerations for resource management is the lengths of time that the online data taking is to be paused and the expected warning time to re-start the online data taking.
+
+If the data taking pauses are of the order in time approximately the same length or longer than a user analysis job then jobs can be completed. 
+Whereas if the data taking pauses are much shorter then users' analysis jobs then these will need to be paused, stored and then re-started on the next pause.
+This adds time to stop or pause a job.
+If needed, jobs can be cancelled in a batch system with the loss of the results to that point.
+
+Virtual machines and containers can be started/stopped in an order of seconds with the virtual machine state preserved.
+If the warning time to restart online data taking is shorter than e.g. 30 seconds then frequent updates of the virtual machine (or container) state to storage will be required in order to facilitate a fast shutdown and return to bare-metal online data processing.
+
+At the time of writing this document, the frequency and length of the data taking pauses and the expected average length (or distribution) of user jobs are not known.
+Also, similarly the warning time required to re-start data taking is not known.
 
 \subsection{Remote sites}
+\label{sec:remote}
+%% John write here...
+% reverse the order? 
+
+The deployment of the computing clusters on the RX sites will depend strongly on how all the sites are connected through the Wide-Area network, as described in~\cite{e3dds-del-1-1}.
+The computing clusters on the RX sites are expected to be  approximately a subset of the central (TX) site configuration.
+
+In the case of a routed 100~Gb/s WAN between the TX and RX sites, the RX sites must be equipped with identical online computing cluster capabilities (Ring buffer/beam former and prompt computing).
+In the other extreme case of a 6~Tb/s optical connection between the TX and RX sites, the RX sites do not require any computing capabilities beyond site monitoring and networking switches.
+
+In all cases the RX computing management should should be designed to be remotely managed, whether from the central TX site or a securely-connected device.
+
+What is minimal setup required?
 
 \subsection{Central site}
+\label{sec:central}
 
-OS provisioning, which OS?
+%kernel updates important for security reasons
+%ringbuffer nodes code be target if used for user compute
+%beamformer nodes probably no user compute
 
-Network configuration
+\subsubsection{Operating System provisioning}
+\label{ssec:os-prov}
+The overall Operating System (OS) choice for the various clusters should be made based on the technical requirements and also the preference of the operator(s).
+Most Linux distributions (Debian, CentOS etc) perform the same tasks with the same level of competence and a high degree of automation.
+Other distributions with a lower level of automation e.g. requiring manual compilation and installation of all services (e.g. Arch Linux~\cite{archlinux}), can perform tasks far more efficiently but at a cost of access to support.  
+There are other distributions aimed at specific types of cluster e.g. the ROCKS~\cite{rocks} for High-Performance computing clusters.
+Another consideration is how many other sites, performing the same type of computing, also use the same OS.
+This can be important for getting help from others when problems arise.
+The choice of OS should weigh these considerations to find the most useful solution.
+\todo[inline,color=red]{JW: How about sections here?}
 
-Switch configuration
+\bitm
+% long term support, existing experience of staff
+\item OS provisioning, which OS (Debian or RedHat based)? \\
+The overall Operating System (OS) choice for the various clusters should be made based on the technical requirements and also the preference of the operator(s).
+Most Linux distributions (Debian, CentOS etc) perform the same tasks with the same level of competence and a high degree of automation.
+Other distributions with a lower level of automation e.g. requiring manual compilation and installation of all services (e.g. Arch Linux~\cite{archlinux}), can perform tasks far more efficiently but at a cost of access to support.  
+There are other distributions aimed at specific types of cluster e.g. the ROCKS~\cite{rocks} for High-Performance computing clusters.
+Another consideration is how many other sites, performing the same type of computing, also use the same OS.
+This can be important for getting help from others when problems arise.
+The choice of OS should weigh these considerations to find the most useful solution.
+%% John... personal choice.
+\item BIOS settings: \\% security, vulnerabilities?
+%% Unknown?
+%% Vendor? ... depends on ... 
+The underlying firmware of the clusters, the BIOS, can be updated manually by the administrators.
+In the case of a computing cluster with hardware supplied and supported by an external company, user updates (flashing) of the BIOS is not generally accepted practice.
+In general, the service contract will stipulate the supplier flashes the BIOS when required.
+If remote BIOS flashing is required then the cluster(s) need to be equipped with appropriate hardware e.g. Intel Active Management Technology~\cite{intel-amt}.
+The firmware on the First Stage Receive Units can be flashed by \EC staff with the guidance (and supply of the firmware image) from the supplier DA Design~\cite{da-design}.
+\item Network configuration:
+%% Overall
+%% e.g. ROCKS distribution.
+%% John some text.
+%% DHCP server(s).
+%% hardware discovery Xcat or Chef??
 
+The configuration of the network also depends on the choice of WAN connecting the RX and TX sites.
+In general the network should be separated into: data network that carries the online data traffic e.g. the UDP packets from FSRU to RBBF nodes and beam files over TCP from RBBF to prompt computing nodes; timing network that carries time signals from the master clock to the timing switches under the subarrays; control network that carries the instructions from the experiment database to the FSRUs and RBBF nodes; monitoring network that carries traffic such as hardware information (temperature, power consumption etc) and video monitoring; back up 4G connection to each RX site.
+
+The network configuration is generally achieved through the creation of sub-networks on the overall private (non externally routable) network over the WAN.
+Each entity (ethernet port) must be assigned an IP address within the correct sub-network.
+This is usually performed by Dynamic Host Configuration Protocol~\cite{dhcp}  (DHCP).
+DHCP can be administered manually, in the case of the UDP data streams from FSRU to RBBF this should be desirable as the FSRU must know exactly which ethernet port to send the correct beam packets.
+In the case of the failure of a RBBF ethernet card, the new ethernet MAC address must be entered into the DHCP configuration to receive the correct IP address assignment.
+\todo[inline,color=red]{JW: Comment on ``open-source'' vs. proprietary dhcp servers? i.e. proprietary may provide gui for admin but tables are stored in binary format. possible loss of data over the years. and ``open-source'' dhcp server that stores tables in plain format much more resilient to data loss and easier to migrate. back up dhcp server? dhcp server to run in VM cluster? dhcp server for each subnet?}
+
+The sub-networks can also be configured manually with static IP addresses assigned to each ethernet port.
+\todo[inline,color=red]{JW:This strategy is ... NOT GOOD!}
+
+The back up 4G connection is only used in case of power/network outages.
+Therefore the 4G connection only has to route packets to/from the control and monitoring networks.
+As it is assumed there is a general power/network outage, data taking and processing cannot proceed.
+
+\item Switch configuration
+%% Usually by the vendor
+%% GUI to change settings.
+%% Ended up with different O/S versions.
+%% Layers and balancing etc.
+The switches (effectively router nowadays) that route the traffic 
+
+\item Startup procedure: Specify order in which different nodes/network/switches are to be powered on
+%% How to re-start the system. Dependency graph used by system.
+%% HPC distribution on Red Hat "Rocks" 
+%% define roles... 
+%% roles into graph.
+%% "cluster start"...
+%% chef, ansible or puppet or other. Too big to fail?
+%% Very far behind on versions??
+\item Shutdown procedure:  Specify order in which different nodes/network/switches are to be powered off.
+%% \todo[inline,color=red]{JW:}
+\item Disaster recovery procedure: How to recover from power outage, switch failure, node failure etc. 
+\eitm
 
 \section{Cluster Login}
 \label{sec:cluster}
 
-\subsection{Administrative Login}
+The data processing site (initially most likely the Skibotn site) will host several distinct clusters for \ED.
+The Ring Buffer-Beam Former (RBBF) nodes will function as the RAM ring buffer and also produce the narrow angle beams.
+These nodes will also write the narrow angle beams into files to be forwarded to the prompt computing for further processing into data products.
+The RBBF cluster is expected to be composed of $30$ high-RAM and throughput computing nodes~\cite{amd-epyc}.
+
+The ``Prompt Computing'' is expected to consist of $N$ commodity computing nodes (optimized for reprocessing of files) and/or $M$ nodes containing
+GPU accelerators.
+
+It is also expected that another system, used for administrative purposes, will be sited at Skibotn. This administrative cluster is not expected to be anywhere near the same scale as the RBBF or Prompt computing clusters
+and is a good candidate to be hosted within virtual machines.
+The RBBF and prompt computing clusters are planned to be used for \ED user analyses during the times when the systems would otherwise be (partially) idle.
+
+If the Optical DWDM fibre ring design is selected, the main \ED compute resources will only be accessible through this network. Routing between \ED and the public internet will be managed by a single access router and firewall, located at the Skibotn site or elsewhere along the ring.
+% Considering also e.g. a location close to Eiscat HQ in Kiruna
+This will be the only way to access the clusters and will allow login (e.g. ssh) and file transfer (FTS, etc) only from other \EC sites. 
+
+There are several types of logins to consider with different access mechanisms:
+\bitm
+\item System administrator: login with full privileges for system maintenance. Typically these are root privileges that can affect anything on the system.
+% This would typically be root
+
+\item Radar developers: login with sufficient capabilities to install and modify radar software.
+% comparable to "kstdev" on legacy systems?
+
+\item Radar expert operators: radar users and developers with non-root privileges to control all aspects of the transmitters and receivers in realtime, but not to change the operating system or install software.
+% "eiscat"  on the legacy systems
+
+\item Machine users: Other systems given privileges to change the scheduling of predefined radar modes in realtime. 
+
+
+\item \EC privileged data users logging in to access sensitive lower-levels of data.
+
+\item Data manager: Sufficient privileges to read and replicate non-sensitive data to external sites.
+
+\item Analysis user: Sufficient privileges to start VMs and stage data on connection from the user analysis job submission portal
+ 
+\item \EC normal users access non-sensitive data under the \EC data embargo rules, and submit requests to run experiments. These users should never log in to the site clusters.
+
+
+\eitm
+
+\subsection{System Administrator Login}
 \label{sec:admin}
 
 % Here describe the NT1 solution for admin logins...
 % 2 factor
 % other candidates?
 
-The central (Skibotn) site will host several distinct clusters for \ED.
-The Ring Buffer-Beam Former (RBBF) nodes will function as the RAM ring buffer and also produce the narrow angle beams.
-These nodes will also write the narrow angle beams into file format to be forwarded to the prompt computing for further processing into data products.
-The RBBF cluster is expected to be composed of $30$ high-RAM and throughput computing nodes~\cite{amd-epyc}.
-The ``Prompt Computing'' is expected to consist of $N$ commodity computing (optimized for reprocessing of files) or $M$ nodes containing
-GPU accelerators.
-It is also expected that another cluster, used for administrative purposes, will be sited at Skibotn.
-This administrative cluster is not expected to be anywhere near the same scale as the RBBF or Prompt computing clusters
-and is a good candidate to be hosted within virtual machines.
-
-The administrators of these clusters will need to be able to access these systems.
+The administrators of these clusters will need to be able to access the \ED systems through the Optical DWDM network via the access router.
 This is different to the logins described in Section~\ref{sec:users} as these will be performed by \EC employees or contractors
 in order to repair/configure/update the systems.
 It is important to remember that these logins will be requesting privileged access (up to root level on Unix-type systems) and contrast to user logins on other \einfra resources.
@@ -191,10 +433,11 @@ or contracted partner.
 The second case is far more likely.
 Some basic requirements for administrative logins can be given:
 \bitm
-\item Login over secure connections only. i.e. no telnet etc;
-\item Logins to clusters restricted to known set of users;
-\item Logins and actions traceable (logged);
-\item Two-factor authentication~\cite{two-factor} possible;
+\item Login over secure connections only. i.e. no unencrypted data anywhere
+
+\item Login restricted to known set of users; highest level of authorization required, e.g. by two-factor authentication~\cite{two-factor}
+
+\item Logins and actions traceable (logged)
 \eitm
 
 \subsubsection{Bastion hosts}
@@ -204,16 +447,17 @@ This subject of securely logging in multiple administrators over many nodes has 
 A solution~\cite{fb-ssh} has been implemented by industry leader Facebook using open-source tools.
 This approach has been implemented in \nnt, an academic computing \einfra, that shares the same characteristics as the future \ED \einfra.
 
-This scheme is based on X.509 certificate-enabled OpenSSH, an implementation of the industry-standard Secure Shell (SSH) for accessing systems.
+% \todo[inline]{FIX}
+This scheme is based on a key-pair-enabled OpenSSH server, an implementation of the industry-standard Secure Shell (SSH) for accessing systems.
 This scheme takes advantage of its special features, that are not widely leveraged, to provide both security and reliability using signed certificates with principals.
 
 This solution is discussed in detail in~\cite{fb-ssh}.
 The \nnt deployment~\cite{nt1-ssh} also uses the ``Bastion host" concept where the administrator logs in to a highly-protected secured host.
 Engineers (administrators) authenticate to the bastion host(s) and obtain the signed SSH certificate.
-This X.509 certificate contains all principals (information) allowed for the specific administrator. 
+This certificate contains all principals (information) allowed for the specific administrator. 
 Two-factor authentication can be implemented on the Bastion host to ensure an improved level of strong authentication.
 This certificate can now be used to SSH into cluster nodes as either root or other lower privileged users.
-In this fashion, no administrator has more access than they requires.
+In this fashion, no administrator has more access than they require~\cite{privileges}.
 
 \subsubsection{Local login node}
 \label{ssec:local-login-node}
@@ -225,11 +469,38 @@ The login node can also be enabled to require two-factor authentication.
 
 \subsubsection{Direct logins}
 \label{ssec:direct}
+% Carl-Fredrik: Isn't this equivalent to opening the firewall between the public internet and the DWDM ring to the world? That should be avoided.
+Another option is for system administrators to directly log in to the cluster nodes.
+This would require the nodes to be open to the internet and the need to maintain a login directory (LDAP or other) to synchronize user name and passwords between nodes.
+Root privileges would be acquired through privilege escalation (sudo or other) after an administrator has logged in.
+This scheme can be considered to be the least secure.
 
-Directly log in to the nodes on the cluster.
-Nodes open to the internet.
-root and user access
-Maintain a login directory (LDAP or other) to synchronize user name and passwords between nodes.
+\subsection{Radar Developer and Expert Operator Login}
+\label{sec:operator}
+The operators of the radar system need access to the scheduler, FSRUs, RBBF and prompt computing nodes in order to update the parameters of the system.  The privileges required for these operations should not be at the highest level (root), to avoid operations that could affect the basic functionality of the systems.
+
+The radar operators should have enough privileges on the clusters to be able to change parameters in databases to affect the beam-forming and change the common program operations in the prompt computing cluster.
+Developers must also be able to update or change the software.
+The interactions of the radar operators  with the system are expected to be a combination of graphical (Jupyter notebooks or other) and command-line (e.g. ssh).
+
+In the case of the radar operators' graphical interaction with the system, step-up authorization with strong authentication will be required, discussed in Section~\ref{sec:users}.
+For command-line interactions, the radar operators should login using the same method as the system administrators in Section~\ref{sec:admin}.
+The radar operator would then receive only the correct level of privilege to do the task.
+
+\subsection{Machine Logins}
+
+Other computer systems within the \ED \einfra will have to access the site computing and storage for at least these purposes
+\bitm
+\item Data replication and staging (DIRAC, Rucio, etc TBD) 
+\item Realtime rescheduling of experiment modes through the scheduler API 
+\eitm
+
+The authorization mechanism here is likely to be X.509 proxy certificates with a limited lifetime.
+% Add info about connections between NT1 systems etc?
+This should never involve direct connections to the RBBF or prompt compute clusters, only to site storage and to the remote scheduler API, which should run on the control system 
+% or even on an external gateway host outside the e3d network?
+
+
 
 \subsection{User Login}
 \label{sec:users}
@@ -240,25 +511,64 @@ These users need to gain access to the various levels of \ED data ranging from r
 The \ED data levels are defined in Table~1 of~\cite{e3ds-md3}.
 Users need to authenticate (identify) themselves in order to access the data and \einfra resources.
 The degree that an authentication can be trusted is given by its strength~\cite{owasp-aai} ranging from weak (e.g. user name and password) to strong (e.g. two-factor authentication from independent sources).
+
 Depending on the data level requested to be accessed by the \ED user, the strength of the authentication may vary.
 The level~1 (a or b) data may be more closely controlled as it may contain hard-target information e.g. satellites or other objects that authorities may have reservations about.
-The higher data levels (to level 3 or 4) are integrated summary or user-produced data.
+The higher data levels (to level 3 or 4) are integrated summary or user-produced data and may not require such stringent authentication.
+
+\subsubsection{Normal Users}
+\label{ssec:normal}
 
 As outlined in~\cite{e3ds-md3}, the expected primary access to \ED data by users is expected to be through a data portal e.g. DIRAC~\cite{dirac}.
 
-The expected access mechanism to 
-Authentication 
-The strength of the 
-authentication of users 
-Reference mainly to the federated identity e.g. EGI Checkin. Others? EduGAIN federation?
+The standard method to authenticate to the DIRAC portal is by possession of a recognized X.509 certificate, either installed to a browser or presented through a command line interface.
+This authentication method entails an operational overhead~\footnote{For a small entity like \EC expecting an order of magnitude more users than currently, this will probably be a heavy overhead.} in certificate issuance and maintenance.
+In order to use this authentication scheme, the \ED users will also have to be educated in the usage and possession of X.509 credentials.
+A hard task~\cite{cert-example} for any research community that mainly consists of scientists rather than \einfra experts.
 
-For example the EGI Check-in service can be integrated 
-Elixir AAI~\cite{elixir-aai}
+A more lightweight and familiar (for the end users) authentication method is available.
+The ``Federated Identity" concept uses the concept of a ``trusted third party" that can provide authentication credentials.
+In this scheme trusted institutional Identity Providers (IDPs) are given permissions (federated) to provide authentication credentials to each other. 
+An example of such a scheme can be the EduGAIN~\cite{edugain} federation.
 
-Strong authentication
+These credentials are passed from the institutional IDPs to services 
+through an {\bf A}uthentication and {\bf A}uthorisation {\bf I}nfrastructure (AAI).
+Typically a user logs in to their home institute IDP with their home institute user name and password (or similar) or even using commercial social media accounts.
+The IDP generates the necessary identity tokens (X.509 certificates or other).  
+These tokens are then transferred transparently to e.g. the DIRAC portal and downstream services that the portal contacts or uses.
+Therefore the users in a authentication-federated institute may access services~\footnote{The authorization permissions and actions for a remote user presenting federated authentication credentials rests with the local host.} in another federated institution.
 
-export controls? 2 factor from the start..
+The DIRAC portal is an example of a service that integrate with proxy authentication services such as EGI Checkin~\cite{egi-checkin} or eduTEAMS~\cite{eduteams}.
+These services can provide the full AAI by managing group membership information, managing groups and subgroups, add and remove users, manage user consent and the acceptable usage policy.
+Both the EGI Checkin~\cite{egi-checkin} and GEANT eduTEAMS~\cite{eduteams} have plans to incorporate the multi-factor authentication discussed below in Section~\ref{ssec:high}.
 
+\subsubsection{Privileged Users}
+\label{ssec:high}
+
+Some \EC users may be considered to have special privileges. 
+There will be users who are allowed to request (or even start) an experiment, and authorized users must also be able to upload analysis software for running in an isolated VM environment. These operations are expected to take place through Jupyter~\cite{jupyter} notebooks.
+
+Another important consideration for user privilege to access the \ED data are requirements that come from external sources e.g. funding and other governmental agencies.
+If the identity of users who access the sensitive (level~1) \ED data is required to be known to a higher strength than that provided by an academic identity federation, then other steps can be taken.
+An AAI that provides a higher strength of authentication, typically using a multifactor scheme, can be used.
+
+Multifactor authentication works with two separate security or validation mechanisms. 
+Typically, one is a physical validation token, and one is a logical code or password and both must be validated before accessing a secured service or product.
+The user first authenticates to their home IDP, typically by password-based authentication (vulnerable to various attacks), and subsequently by a second authentication factor required by the AAI.
+This can be a SMS One-Time Password~\cite{otp}, RSA token~\cite{rsa-token} or a mobile app etc.
+
+The ELIXIR AAI~\cite{elixir-aai} is an example of an AAI that enables researchers to use their home organisation credentials or community or commercial identities (e.g. ORCID, LinkedIn) to sign in and access data and services.
+Importantly, ELIXIR AAI includes a ``step-up" authentication level for services with sensitive data, that expect not just an authentication credential but also authentication which relies on multiple authentication factors.
+
+Usage of the ELIXIR AAI by \ED may be problematic as it looks likely that there may be policy and governance problems.
+ElIXIR AAI is designed for access to resources/services for professional activities related to the development and use of services for life science research.
+Therefore use of EGI Checkin or eduTEAMS with multifactor authentication enabled would solve the authentication issues for \ED.
+
+
+
+% Some one who requests an experiment.
+% Users request experiment
+% 
 
 
 % end of the text of the document...
