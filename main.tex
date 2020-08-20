@@ -42,6 +42,8 @@
 
 \input{abbrev}
 
+% \hyphenation{e-infrastructure}
+
 % \setlength{\topskip}{0mm}
 \setlength{\headheight}{15pt}
 % \setlength{\topmargin}{-5.4mm}
@@ -98,7 +100,7 @@ John White (NeIC) {\tt john.white@cern.ch}}}
 % \todo[inline,color=red]{john to write}
 %\todo[inline]{Executive summary to be written at the end of the document writing process? Moved the current exec summary to introduction as that's what it was more like}
 
-This document describes the issues foreseen in deploying and configuring the computing \einfra for the \ED project. This computing \einfra consists of clusters that will perform specialized tasks.
+This document describes the issues foreseen in deploying and configuring the \einfra for the \ED project. This computing \einfra consists of clusters that will perform specialized tasks.
 The management of these clusters should be performed in a robust and audit-able manner using standard tools.
 The capacity of the network connections between the sites will influence the deployment of the clusters and therefore their administration.
 
@@ -107,26 +109,23 @@ This effort should be considered as secondary to the task of running the online 
 But some effort should be given to this as the total computing resources, if deployed with a low-latency local area network, would represent a considerable computing power.
 This could be used for more difficult analysis tasks such as the 3-D analysis that requires parallel computing capabilities.
 
-Also considered is the means to access these computing clusters and other \ED \einfra.
+Also considered is the means to access these computing clusters and other \ED \newline \einfra.
 This takes into account logins ranging from system administrators to public consumers of published data.
 Some options are presented that provide services with the correct level of security to allow users to authenticate themselves and login to the appropriate resources.
 
-\section{Purpose}
-\label{purpose}
+\section{Purpose} \label{sec:purpose}
 
-The purpose of this document is to describe the simulated data processing chain of the upcoming \ED radar.
-This document briefly describes each component in the data processing chain and the work required to deploy on the \neinfra{s}.
+The purpose of this document is to describe how the computing clusters for the \ED project can be managed and accessed.
+It is intended as a broad overview of the cluster management and access techniques currently used by national \einfra providers.
 
 \subsection{Intended Audience}
 
-The intended audience of this document is primarily the \ED project management and staff in order to understand what is complete and where more work is required in the data chain.
-The operators of national \einfra{s} can also use this document to understand the requirements on hardware and networks in order to support \ED.
+This document is intended for the \ED project management and members and also the national computing \einfra providers of the hosting countries.
 
-\section{Introduction}
-\label{intro}
+\section{Introduction} \label{sec:intro}
 
 The \ED sites, the central transmitting/receiving (TX) and remote receiving (RX) sites, will require computing capacity in order to process the data from the First Stage Receive Units (FSRUs) and serve data to the users.
-This is expected to be a real-time process as described in~\cite{e3dds-del-2} and performed by clusters of computers specialized to the task.
+This is expected to be a real-time process as described in E3DDS Project Deliverable 2~\cite{e3dds-del-2} and performed by clusters of computers specialized to the task.
 
 
 Computing clusters to consider fall into these categories:
@@ -138,11 +137,12 @@ Computing clusters to consider fall into these categories:
 \item \ED data archives for long-term storage of data products;
 \item User analysis computing nodes.
 \eitm
-An assumption is made that the TX site, located at Skibotn NO, will function as the ``central'' site as opposed to the planned two RX sites, nominally located at Kaaresuvanto FI and Kaiseniemi SE.
+An assumption is made that the TX site, located at Skibotn NO, will function as the ``central'' site as opposed to the two RX sites, located at Kaaresuvanto FI and (nominally) Kaiseniemi SE. % \todo[inline]{CFE: Skibotn and Karesuvanto sites are ready for antenna installation}
 
 The amount of computing required to be deployed at these sites varies according to the capacity and latency of the wide area network (WAN) that connects them.  
-The WAN options are described in~\cite{e3dds-del-1-1}.
-From ~\cite{e3dds-del-1-1}, the options are generally ring topology between the TX and RX sites:
+The WAN options are described in E3DDS Project Deliverable 1.1~\cite{e3dds-del-1-1} that reports 
+% From ~\cite{e3dds-del-1-1}, 
+the options are generally a ring topology between the TX and RX sites:
 \begin{enumerate}
 \item IP-routed connections. 200~Gb/s total capacity;
 \item Optical Dense Wavelength Division Multiplexing~\cite{dwdm} (DWDM). 200~Gb/s per RX site to central site;
@@ -159,7 +159,7 @@ The computing clusters on the RX sites are expected to be  approximately a subse
 In the case of option 1 above, a routed 100~Gb/s WAN between the TX and RX sites, the RX sites must be equipped with identical online computing cluster capabilities (Ring buffer/beam former and prompt computing).
 In the other extreme case, option 4, of a 6~Tb/s optical connection between the TX and RX sites, the RX sites do not require any computing capabilities beyond site monitoring and networking switches.
 
-In all cases the management of the above clusters should should be designed to be remotely managed, whether from the central TX site or a securely-connected device.
+In all cases the management of the above clusters should be designed to be remotely managed, whether from the central TX site or a securely-connected device.
 
 
 % \subsection{Central site} \label{sec:central}
@@ -173,32 +173,65 @@ In all cases the management of the above clusters should should be designed to b
 
 \section{IT service management} \label{sec:itsm}
 
-(ITSM) %define and reference
+%define and reference
+According to wikipedia, IT service management (ITSM) is the activities that are performed by an organization to design, plan, deliver, operate and control information technology (IT) services offered to customers. 
 
 Some benefits of ITSM:
 \bitm
-\item Better understand services and responsibities
-\item Formalize what is expected through SLAs, UA and OLA%define
-\item Provision resources in an optimal way (both human and material)
-\item Have a common language with external partners
-\item Generally improve professional service delivery
+\item Better understand services and responsibilities;
+\item Formalize what is expected e.g. through Service Level Agreements (SLAs), Underpinning Agreements~\footnote{An Underpinning Agreement can be seen as a SLA with an external supplier where the service provider is in the customer role.}
+and Operational Level Agreements (OLAs);
+%define
+%An underpinning agreement (UA) can be seen as a service level agreement (SLA) with an external supplier where the service provider is in the customer role.
+\item Provision resources in an optimal way (both human and material);
+\item Have a common language with external partners;
+\item Generally improve professional service delivery.
 \eitm
-Implementing also comes with a cost. Human resources are needed for
-training, implementation, assessment and possibly consultation. Also
-extra tools are needed to handle things like, for example, change management and issue ticket.
+% Implementing ITSM in general also comes with a cost. 
+% Human resources are needed for training, implementation, assessment and possibly consultation. 
+% Also extra tools are needed to handle issues like, for example, change management and issue tickets.
 % configuration database (not only cluster)
+%% New text from Mattias
+Implementing ITSM in general also comes with a cost.  
+Human resources are needed for creating policies, training,
+implementation, certification assessment and possibly consultation. 
+Also extra tools are needed to handle issues
+like, for example, ``Change Management'' and issuing tickets.
 
-Frameworks and tools for ITSM. 
+A more rigid ITSM reduces the risk of mistakes when making changes to the infrastructure, but increases the amount of work needed to make any changes. 
+Risks of not being agile enough to meet needs or frustrated operators departing to a less bureaucratic organisation must be weighed against the cost of failure in various services.
 
-Most well known ITIL, most complete ISO 20000, lightweight FitSM.
+An example of a high ``cost of failure'' is a leak of sensitive information putting the entire organisation and/or its' reputation at risk, compared to an end user computational job getting interrupted and having to re-run their notebook. 
+The first event absolutely must not happen, but the second only needs to be rare enough that the scientists are not unhappy with
+the service offered.
 
-Processes and process management % (ITIL 3 ->4, process -> service)
+%Frameworks and tools for ITSM 
+In order properly implement ITSM one will need to adopt a standard and/or frameworks for ITSM. 
+The most well known is ITIL (Information Technology Infrastructure Library)~\cite{itil},%https://www.axelos.com/best-practice-solutions/itil
+the most complete is ISO/IEC 2000~\cite{iso2000} an international standard for IT service management, %https://www.iso.org/standard/70636.html
+and the lightweight option is FitSM~\cite{fitsm}.
+%https://www.fitsm.eu/
+% fitsm standard is free and can be downloaded here https://www.fitsm.eu/downloads/
+Strictly speaking neither ITIL or FiTSM are proper standards compared to ISO/IEC 20000, however, both ITIL and FitSM do offer certification.
+For processes and process management, this is addressed in the 
+% (ITIL 3 ->4, process -> service)
+current and latest version of ITIL (version 4)~\cite{itil4}.
+% https://www.axelos.com/itil-4
 
-How to implement? Adopt, adapt, apply
+In general for \ED the question will be if or how to implement ITSM.
+The ITIL framework is generally aimed towards commercial SLAs where avoidance of legal issues makes the framework heavy for academic purposes.
+FitSM is an attempt to be a more lightweight ITSM framework for a broad range of organisations.
+In each case, the frameworks certainly contain more than \ED will require so the strategy should be to:
+\begin{enumerate}
+\item Adopt a framework; 
+\item Adapt it to the \ED needs; 
+\item Apply the framework as widely as possible.
+\end{enumerate}
+% \todo[inline]{CFE: Envri-FAIR Task Force 4 is also looking into \url{https://www.coretrustseal.org/} certification of data repositories. Is this applicable / advantageous to us?}
 
-\section{Site Cluster Management}
+\section{Site Cluster Management} \label{sec:cluster-man}
 
-It will be a complex task to manage and provisioning the site
+It will be a complex task to manage and provision the site
 clusters. Manually keeping track of hardware configurations and
 software stacks with interactive tools is likely to be error prone and
 work intensive. The installations should be consistent across the
@@ -209,39 +242,50 @@ through machine readable definition files, which are to be put under
 version control, and deployed using dedicated tooling. 
 This strategy is more generally known as Infrastructure as code (IaC).
 
-The configuration is typically stored in a database % should also be integrated with ITSM tool
+%The configuration is typically stored in a database 
+% should also be integrated with ITSM tool
 
-Audability: should be possible to review and trace changes
-
-Authenticity: signed commits
 
 % also comes with a cost similar to FitSm
-% also a tradeoff between stricness / agility as comenteed by MW above
+% also a tradeoff between stricness / agility as commented by MW above
 
 \subsection{Configuration and Management Tools} \label{sec:config}
 
-% Choice of tool will depend on operation scenario from do4
-
-% make table instead, link to more exhaustive list
+% make table instead, 
+There exist several different frameworks work cluster configuration management. We list here three of the big ones and one particularly geared towards HPC clusters (xCAT):
 \bitm
-\item xCat~\cite{xcat} open source  Perl, Python, Bash
-\item Ansible~\cite{ansible} enterprice/open source~\cite{ansible-community}, Python, agentless, INI/YAML configuration, playbook~\cite{ansible-galaxy}
-\item Puppet~\cite{puppet} enterprice/open source~\cite{puppet-osp},  C++, Clojure, Ruby Domain Specific Language (DSL) config, modules~\cite{puppet-forge}
-\item Chef~\cite{chef} enterprice/open source~\cite{chef-infra}, Ruby, Erlang, DSL config, cookbooks~\cite{chef-cookbooks}
+\item xCat~\cite{xcat} open source  Perl, Python, Bash;
+\item Ansible~\cite{ansible} enterprise/open source, Python, agentless, INI/YAML configuration, playbook~\cite{ansible-galaxy};
+\item Puppet~\cite{puppet} enterprise/open source~\cite{puppet-osp},  C++, Clojure, Ruby Domain Specific Language (DSL) config, modules~\cite{puppet-forge};
+\item Chef~\cite{chef} enterprise/open source~\cite{chef-infra}, Ruby, Erlang, DSL config, cookbooks~\cite{chef-cookbooks}.
 \eitm
+For a more extensive list of configuration management frameworks see~\cite{open-source-config}.
+% \todo[inline]{Simon: Something is missing here. JW: Fixed.}
+%https://en.wikipedia.org/wiki/Comparison_of_open-source_configuration_management_software
+Ansible, Puppet, and Chef have big user communities, where configurations are shared. These shared configurations are referred to as playbooks, modules, and cookbooks respectively. Depending on use case theses can be adopted and/or modified so that one does not need to start from scratch for many basic services. 
+In the end, the choice of tool will depend on the choice of operational scenario from E3DDS Project Deliverable DO4~\cite{e3dds-del-4}. It is also possible to use several frameworks together as done at many of the HPC sites in the Nordics. 
 
-Approaches to managing state: declarative/functional/what vs imperative/procedural/how.
+%Approaches to managing state: declarative/functional/what vs imperative/procedural/how.
+Configuration management is to a large extent about how to manage state. Here, there are two main approaches: \emph{declarative} and \emph{imperative}. In the declarative approach the desired configuration is described and the framework will figure which actions are needed to achieve this. For the imperative approach the configuration explicitly describes the necessary actions to achieve the desired state. In more every day language one could say this is about what state is desired, versus how to achieve that state. 
+In programming language terms these approaches closely relate to functional and procedural programming techniques, respectively. 
+%Methods to propagate changes: push vs pull, transactions should preferably be idempotent.
+There are also two main approaches to propagate changes: \emph{push} versus \emph{pull}. 
+Consider server configuration as an example: in the push approach the state will be pushed to the servers from the central configuration data base, whereas in the pull approach the servers will ask for and pull in the state change.
+In any case should transactions to propagate state preferably be idempotent, that is, if two identical transaction are issued sequentially the second one should be a null operation.  
 
-Methods to propagate changes: push vs pull, transactions should preferably be idempotent.
+Some tools provide roll back to previous known working state, this is usually easier implemented for the declarative approach. 
+NixOS~\cite{nixos} is an operating system where this is a built-in feature, but comes with a high learning curve. 
 
-Some tools provide roll back to previous known working state. 
-NixOS~\cite{nixos} is an operating system were this is a built in feature, but comes with a high learning curve. 
+Further, it is desirable that configuration changes are authenticated and auditable. 
+To achieve this changes to the configuration database should be signed, and state changes be logged, so that it is possible to later trace and review changes. 
 
 \subsection{Operating System provisioning}
 \label{ssec:os-prov}
 The overall Operating System (OS) choice for the various clusters should be made based on the technical requirements and also the preference of the operator(s).
 Most Linux distributions (Debian, CentOS etc) perform the same tasks with the same level of competence and a high degree of automation.
-Other distributions with a lower level of automation e.g. requiring manual compilation and installation of all services (e.g. Arch Linux~\cite{archlinux}), can perform tasks far more efficiently but at a cost of access to support.  
+Other distributions with a lower level of automation e.g. requiring manual compilation and installation of all services (e.g. Arch Linux~\cite{archlinux}),
+% \todo[inline]{Carl-Fredrik: Arch uses binary software packages by default, with a build system as an option, but does indeed require manual install and configuration.Gentoo builds software from source. In both cases the builds are automatic though so manual compilation is a misnomer. Manjaro is an interesting option: an Arch derivative with an installer and a repository of frozen packages. Probably best to stick to Ubuntu LTS for security reasons}
+can perform tasks far more efficiently but at a cost of access to support.  
 There are other distributions aimed at specific types of cluster e.g. the ROCKS~\cite{rocks} for High-Performance computing clusters.
 Another consideration is how many other sites, performing the same type of computing, also use the same OS.
 This can be important for getting help from others when problems arise.
@@ -250,7 +294,7 @@ The choice of OS should weigh these considerations to find the most useful solut
 % \todo[inline,color=red]{JW: How about sections here?}
 % \todo[inline,color=red]{JW: Make into sections...}
 
-\subsection{BIOS settings} \label{ssec:bios} \\% security, vulnerabilities?
+\subsection{BIOS settings} \label{ssec:bios} % security, vulnerabilities?
 %% Unknown?
 %% Vendor? ... depends on ... 
 The underlying firmware of the clusters, the BIOS (or UEFI), can be updated manually by the administrators.
@@ -275,7 +319,7 @@ This is usually performed by Dynamic Host Configuration Protocol~\cite{dhcp}  (D
 DHCP can be administered manually, in the case of the UDP data streams from FSRU to RBBF this should be desirable as the FSRU must know exactly which ethernet port to send the correct beam packets.
 In the case of the failure of a RBBF ethernet card, the new ethernet MAC address must be entered into the DHCP configuration to receive the correct IP address assignment.
 
-A consideration for network and switch (effectively router nowadays) configuration is that a proprietary solution may provide a Graphics User Interface or some other high-level interface but the configurations may be stored in a proprietary (binary) format.
+A consideration for network and switch (effectively router nowadays) configuration is that a proprietary solution may provide a Graphical User Interface or some other high-level interface but the configurations may be stored in a proprietary (binary) format.
 Subsequent upgrades of software or network hardware can result in loss of configuration data.
 A solution that stores configurations in an open, standard format gives resilience to data loss and ease of future upgrades. 
 The NAV~\cite{nav} software from Uninett~\cite{uninett} is an option for network and switch configuration.
@@ -287,24 +331,42 @@ As it is assumed there is a general power/network outage, data taking and proces
 
 \subsection{Startup and Shutdown procedures} \label{ssec:power}
 %% Dan to write... below...
+% this maybe more about cluster operation than cluster configuration
 
-Startup procedure: Specify order in which different nodes/network/switches are to be powered on
-%% How to re-start the system. Dependency graph used by system.
-%% HPC distribution on Red Hat "Rocks" 
-%% define roles... 
-%% roles into graph.
-%% "cluster start"...
-%% chef, ansible or puppet or other. Too big to fail?
-%% Very far behind on versions??
+Since the radar sites are remote and possibly not staffed 24/7 it will be extra important to identify which operations will require manual presence at the radar site. In normal daily operation ideally no on-site personal should be necessary. 
+%
+There are two operation scenarios where it will be difficult to fully describe and automate, even with he help of configuration management tools, that is the startup and shutdown procedures. 
 
-Shutdown procedure:  Specify order in which different nodes/network/switches are to be powered off.
-%% \todo[inline,color=red]{JW:}
+Here, it will be useful to identify which parts of the system depends on which and in which order they should be powered on and off. Probably hands on experience will be necessary to identify all these dependencies both for startup and shutdown. With this in mind, we recommend to attempt a controlled shutdown operation as soon as possible after the site is up and running.
 
-Disaster recovery procedure: How to recover from power outage, switch failure, node failure etc. 
+A third operation scenario to consider is service and repair of hardware. One should try to identify in which cases can this be done without a shutdown, a partial shutdown or a if a full shutdown is necessary. 
+
+Finally, one should have a disaster recovery procedure.
+Here, all scenarios are almost impossible to foresee, but some obvious ones to consider are power outage, switch failure, node failure etc.
+
+Much of what is described in this section has more to do with cluster and site operation than configuration management. All these scenarios and operations and their possible consequences SLAs and OLAs should be described and documented by the ITSM system.
+
+%% section below moved here from deleted hardware further down
+
+%% Dan to write.
+%% keep text general
+
+%% Thinking of good way to not have to go to a node to
+%% switch off/on
+%% Wake on LAN
+
+%% Lights-out management (LOM) or out-of-band management
+% from wikipedia: https://en.wikipedia.org/wiki/Out-of-band_management
+%In systems management, out-of-band management involves the use of management interfaces (or serial ports) for managing and networking equipment. 
+
+%% Out-of-band access to servers, switches and if possible FSRUs
+
+%% Many vendors have different implementations (eg HPE iLO)
 
 \subsection{Software provisioning} \label{ssec:software}
 
-The software for the clusters may be provided through the OS, a separate software stack, virtual machines or containers or software installation frameworks.
+The software (radar control, online data processing and user analysis ) that will run on the clusters may be provided through: the OS; a separate software stack; virtual machines or containers; software installation frameworks.
+%% \todo[inline]{Carl-Fredrik: Do we have to distinguish system SW, operational SW and user analysis SW? System software installation can be handled with the above tools, Ansible etc, maybe this would also work for RBBF and standard prompt analysis software.}
 
 \subsubsection{CernVM-FS} \label{ssec:cernvmfs}
 Software for the RBBF and prompt computing and user computing can be provided by the CernVM File System~\cite{cernvmfs} (CernVM-FS). 
@@ -318,9 +380,8 @@ In many cases, it replaces package managers and shared software areas on cluster
 %% Dan...https://easybuild.readthedocs.io/
 EasyBuild~\cite{easybuild} is framework for building and installing software that sits on top of regular building systems like make. 
 EasyBuild also generates module files~\cite{lmod}, which make it possible to keep several versions of libraries and software to coexist on the system at the same time. 
-The module system achieves this by manipulating the content of the \texttt{PATH} and {\tt LDLIBRARYPATH} environment variables. 
-Builds are completely specified by a human readable "easyconfig" configuration file which can easily be shared across sites and between users. 
-The official repository can be found here: \texttt{https://github.com/easybuilders/easybuild-easyconfigs}
+The module system achieves this by manipulating the content of the \texttt{PATH} and {\tt{LD\char`_LIBRARY\char`_PATH}} environment variables. %% JW sort this out.
+Builds are completely specified by a human readable ``easyconfig'' configuration file which can easily be shared across sites and between users and the official repository can be found at~\cite{easybuild-repo}.
 
 For prompt and user computing to be used in research reproducibility is important. It should be possible for other researchers to repeat the same analysis starting from the same data. Further, it should be possible repeat the same computation, maybe two years later, and still get the same numerical results.
 % isolation from base os as far as possible plus exact version specification of dependencies 
@@ -336,8 +397,9 @@ There is another framework that is very similar to EasyBuild, called Spack~\cite
 
 The Gentoo Prefix project~\cite{gentoo-prefix} develops and maintains a way of installing Gentoo systems in a non-standard location.
 This allows to install Gentoo in another location in the file system hierarchy, hence avoiding conflicts.
-By using an offset (the "prefix" location), it is possible for many ``alternative'' user groups to benefit from a large part of the packages in the Gentoo Linux Portage tree. 
+By using an offset (the ``prefix'' location), it is possible for many ``alternative'' user groups to benefit from a large part of the packages in the Gentoo Linux Portage tree. 
 
+\iffalse
 %% JW we can remove this section
 \subsection{Hardware control} \label{ssec:hardware}
 %% move to startup and shutdown section
@@ -360,6 +422,7 @@ Hardware control: remote console, power management
 
 Remote console
 either ssh console to the server or power supply also through the monitoring network.
+\fi
 
 % Firmware ... if power supply requires firmware then updated by the vendor ... service agreement.
 
@@ -381,22 +444,28 @@ Logs are data with a time stamp to keep track of events, for instance errors, tr
 
 %% John to continue... here. OK?
 If logs are to be compared between different services then an important requirement is a standardized logging format. 
-At the very minimum, a standard time and server address format will make tasks such as forensics possible.
-
+At the very minimum, a standard time and server address format will make tasks such as forensics after a security incident possible.
 %% Collection
-First step is to decide which and how much data to collect. For system events and services syslog (rsyslog) are standard. 
+
+The first step is to decide which and how much data to collect. 
+For system events and services {\tt syslog} ({\tt rsyslog}) are standard. 
 It is also possible to have other shell scripts and application to log with the logger shell command. 
-When it comes to numeric time series data for system resource such as CPU load and memory use, the RRD file format offers compact storage for long time series. 
-RRDtools are collection of tools gather, manipulate, and graph rdd files. 
-For data collection of system level statistics the collectd deamon can also write to the rdd file format.
+When it comes to numeric time series data for system resource such as CPU load and memory use, the RRD~\cite{rrdtool} file format offers compact storage for long time series. 
+RRDtools~\cite{rrdtool} is a collection of tools to gather, manipulate, and graph rdd files. 
+For data collection of system level statistics the {\tt collectd} daemon can also write to the RDD file format.
+There are other implementations of Time-Series DataBases that might be used for storing metrics e.g. InfluxDB~\cite{influxdb} and Prometheus' built-in Time-series database~\cite{prometheus}.
+
 % Many other applications
 
 %% Transport to centralized storage
-Next, at least some of the logs, should be transported to more centralized storage. This can potentially be done in several steps. 
+Next, at least some of the logs, should be transported to more centralized storage. 
+This can potentially be done in several steps. 
 Some data might only be collected and kept on the individual nodes, other data may be stored on a server on site and lastly further data and metrics might be extracted for storage in a centralized data base off the radar sites.
 % retries, security
-For logs rsyslog can transport over tcp to a central server. Logs can also be kept locally or be temporarily stored in a spool directory before further transport. 
-The logging can run asynchronously and supports retries the central server can not be reached. 
+% For logs rsyslog can transport over tcp to a central server. 
+{\tt rsyslog} can transport logs over {\tt tcp} to a central server.
+Logs can also be kept locally or be temporarily stored in a spool directory before further transport. 
+The logging can run asynchronously and supports retries if the central server can not be reached. 
 % logstash http://logstash.net/, can aggregate logs from many different sources. has input filter, and output pipilines
 In general it might be useful to aggregate logs from many different sources with various formats. One of the most common tools for this purpose is logstash~\cite{logstash}, which comes with a library of filters that can be used in a data processing pipeline. Logstash can also collect and transport logs based on ip addresses. 
 
@@ -407,8 +476,8 @@ In general it might be useful to aggregate logs from many different sources with
 % For how long time and how much to store
 
 %% Analysis
-Finally, logs and metrics should be extracted, analyzed and displayed. One popular tool is the elastic stack~\cite{elastic} based on ElasticSearch for data analysis and Kibana for graphical display. 
-Another popular tool to query and vizualise metrics is Grafana~\cite{grafana}. Other popular monitoring tools worth mentioning are Nagios, Zabbix and Ganglia
+Finally, logs and metrics should be extracted, analyzed and displayed. One popular tool is the elastic stack~\cite{elastic} based on ElasticSearch for data analysis and Kibana~\cite{kibana} for graphical display. 
+Another popular tool to query and vizualise metrics is Grafana~\cite{grafana}. Other popular monitoring tools worth mentioning are Nagios~\cite{nagios}, Zabbix~\cite{zabbix} and Ganglia~\cite{ganglia}.
 % https://www.elastic.co/
 % Realtime display: Kibana, Grafana https://grafana.com/
 
@@ -450,12 +519,12 @@ Whereas the higher level solutions hide the underlying complexity but require ha
 % etc.
 Some considerations for resource management is the lengths of time that the online data taking is to be paused and the expected warning time to re-start the online data taking.
 
-If the data taking pauses are of the order in time approximately the same length or longer than a user analysis job then jobs can be completed. 
-Whereas if the data taking pauses are much shorter then users' analysis jobs then these will need to be paused, stored and then re-started on the next pause.
+If the data taking pauses have durations of approximately the same length or longer than a user analysis job then jobs can be completed. 
+Whereas if the data taking pauses are much shorter than the users' analysis jobs then these will need to be paused, stored and then re-started on the next pause.
 This adds time to stop or pause a job.
 If needed, jobs can be cancelled in a batch system with the loss of the results to that point.
 
-Virtual machines and containers can be started/stopped in an order of seconds~\footnote{Containers can start/stop reliably in the order of sub-seconds.} with the virtual machine state preserved.
+Virtual machines and containers can be started/stopped in the order of seconds~\footnote{Containers can start/stop reliably in the order of sub-seconds.} with the virtual machine state preserved.
 If the warning time to restart online data taking is shorter than e.g. 30 seconds then frequent updates of the virtual machine (or container) state to storage will be required in order to facilitate a fast shutdown and return to bare-metal online data processing.
 
 At the time of writing this document, the frequency and length of the data taking pauses and the expected average length (or distribution) of user jobs are not known.
@@ -471,7 +540,7 @@ Finally, we like to note that using RBBF and prompt computing nodes for user com
 The data processing site (initially most likely the Skibotn site) will host several distinct clusters for \ED.
 The Ring Buffer-Beam Former (RBBF) nodes will function as the RAM ring buffer and also produce the narrow angle beams.
 These nodes will also write the narrow angle beams into files to be forwarded to the prompt computing for further processing into data products.
-The RBBF cluster is expected to be composed of $30$~\footnote{At the time of writing, it is expected that each CPU can handle one wide-angle beam from the FSRUs. Therefore 10 dual socket servers are required for each site.} high-RAM and throughput computing nodes~\cite{amd-epyc}.
+The RBBF cluster is expected to be composed of $30$~\footnote{At the time of writing, it is expected that each CPU can handle one wide-angle beam from the FSRUs. Therefore 10 dual socket servers are required for each RX site.} high-RAM and throughput computing nodes~\cite{amd-epyc}.
 
 The ``Prompt Computing'' is expected to consist of $N$ commodity computing nodes (optimized for reprocessing of files) and/or $M$ (where $N > M$) nodes containing GPU accelerators.
 
@@ -483,7 +552,9 @@ If the Optical DWDM fibre ring design is selected, the main \ED compute resource
 % Considering also e.g. a location close to Eiscat HQ in Kiruna
 This will be the only way to access the clusters and will allow login (e.g. ssh) and file transfer (FTS, etc) only from other \EC sites. 
 
-There are several types of logins to consider with different access mechanisms:
+\EC normal users can access non-sensitive data under the \EC data embargo rules, and submit requests to run experiments. 
+These users should never log in to the online site clusters.
+Given this, there are several types of logins to consider with different access mechanisms:
 \bitm
 \item System administrator: login with full privileges for system maintenance. Typically these are root privileges that can affect anything on the system.
 % This would typically be root
@@ -494,17 +565,16 @@ There are several types of logins to consider with different access mechanisms:
 \item Radar expert operators: radar users and developers with non-root privileges to control all aspects of the transmitters and receivers in realtime, but not to change the operating system or install software.
 % "eiscat"  on the legacy systems
 
-\item Machine users: Other systems given privileges to change the scheduling of predefined radar modes in realtime. 
+\item Machine users: Other systems given privileges to change the scheduling of predefined radar modes in real time. 
 
 \item \EC privileged data users logging in to access sensitive lower-levels of data.
 
-\item Data manager machine login: Sufficient privileges to read and replicate non-sensitive data to external sites.
-\todo[inline,color=red]{JW: Surely data replication will be automatic? Given the volumes of data expected and the expertise existing to set up such an automatic system?}
+\item Data manager machine login: Sufficient privileges to read and replicate non-sensitive data to external sites and perform machine to machine logins.
+
+% \todo[inline,color=red]{JW: Surely data replication will be automatic? Given the volumes of data expected and the expertise existing to set up such an automatic system? Could this be re-written as ``Data management machine login"??}
 
 \item Analysis user: Sufficient privileges to start VMs and stage data on connection from the user analysis job submission portal.
  
-\item \EC normal users access non-sensitive data under the \EC data embargo rules, and submit requests to run experiments. These users should never log in to the site clusters.
-
 \eitm
 
 \subsection{System Administrator Login}
@@ -530,8 +600,8 @@ Some basic requirements for administrative logins can be given:
 \item Logins and actions traceable (logged)
 \eitm
 
-\subsubsection{Bastion hosts}
-\label{ssec:bastion}
+% \subsubsection{Bastion hosts} \label{ssec:bastion}
+\subsubsection{Signed ssh credentials via bastion host} \label{ssec:bastion}
 
 This subject of securely logging in multiple administrators over many nodes has been studied in industry~\cite{secure-ssh}.
 A solution~\cite{fb-ssh} has been implemented by industry leader Facebook using open-source tools.
@@ -600,18 +670,19 @@ This should never involve direct connections to the RBBF or prompt compute clust
 The NeIC E3DS project has investigated~\cite{e3ds-md3}
 the requirements for users functioning in a scientific (as opposed to administrative) role.
 These users need to gain access to the various levels of \ED data ranging from raw level~1 to physical parameters level~3 data.
-The \ED data levels are defined in Table~1 of~\cite{e3ds-md3}.
+The \ED data levels are defined in Table~1 of E3DS Project Deliverable MD-3~\cite{e3ds-md3}.
 Users need to authenticate (identify) themselves in order to access the data and \einfra resources.
 The degree that an authentication can be trusted is given by its strength~\cite{owasp-aai} ranging from weak (e.g. user name and password) to strong (e.g. two-factor authentication from independent sources).
 
 Depending on the data level requested to be accessed by the \ED user, the strength of the authentication may vary.
-The level~1 (a or b) data may be more closely controlled as it may contain hard-target information e.g. satellites or other objects that authorities may have reservations about.
+The level~1 (a or b) data may be more closely controlled as it may % contain hard-target information e.g. satellites or other objects that authorities may have reservations about.
+possibly contain more sensitive information subject to regulation.
 The higher data levels (to level 3 or 4) are integrated summary or user-produced data and may not require such stringent authentication.
 
 \subsubsection{Normal Users}
 \label{ssec:normal}
 
-As outlined in~\cite{e3ds-md3}, the expected primary access to \ED data by users is expected to be through a data portal e.g. DIRAC~\cite{dirac}.
+As outlined in E3DS Project Deliverable MD-3~\cite{e3ds-md3}, the expected primary access to \ED data by users is expected to be through a data portal e.g. DIRAC~\cite{dirac}.
 
 The standard method to authenticate to the DIRAC portal is by possession of a recognized X.509 certificate, either installed to a browser or presented through a command line interface.
 This authentication method entails an operational overhead~\footnote{For a small entity like \EC expecting an order of magnitude more users than currently, this will probably be a heavy overhead.} in certificate issuance and maintenance.
@@ -621,7 +692,7 @@ A hard task~\cite{cert-example} for any research community that mainly consists 
 A more lightweight and familiar (for the end users) authentication method is available.
 The ``Federated Identity" concept uses the concept of a ``trusted third party" that can provide authentication credentials.
 In this scheme trusted institutional Identity Providers (IDPs) are given permissions (federated) to provide authentication credentials to each other. 
-An example of such a scheme can be the EduGAIN~\cite{edugain} federation.
+An example of such a scheme is the EduGAIN~\cite{edugain} federation.
 
 These credentials are passed from the institutional IDPs to services 
 through an {\bf A}uthentication and {\bf A}uthorisation {\bf I}nfrastructure (AAI).
@@ -653,7 +724,7 @@ The ELIXIR AAI~\cite{elixir-aai} is an example of an AAI that enables researcher
 Importantly, ELIXIR AAI includes a ``step-up" authentication level for services with sensitive data, that expect not just an authentication credential but also authentication which relies on multiple authentication factors.
 
 Usage of the ELIXIR AAI by \ED may be problematic as it looks likely that there may be policy and governance problems.
-ElIXIR AAI is designed for access to resources/services for professional activities related to the development and use of services for life science research.
+ELIXIR AAI is designed for access to resources/services for professional activities related to the development and use of services for life science research.
 Therefore use of EGI Checkin or eduTEAMS with multifactor authentication enabled would solve the authentication issues for \ED.
 
 \subsubsection{Public Users} \label{ssec:public}
